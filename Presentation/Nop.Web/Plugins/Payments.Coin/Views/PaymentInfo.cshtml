@@ -1,0 +1,67 @@
+﻿@{
+    Layout = "";
+}
+@model Nop.Plugin.Payments.Coin.Models.PaymentInfoModel
+<script type="text/javascript">
+    var divsToHide = document.getElementsByClassName("payment-info-next-step-button");
+    for (var i = 0; i < divsToHide.length; i++) {
+        divsToHide[i].style.display = "none";
+    }
+</script>
+<style>
+    .cardPayment {
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        width: 150px;
+    }
+
+        .cardPayment:hover {
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        }
+
+    .containerPayment {
+        padding: 2px 16px;
+    }
+
+    .loadingbarpayment {
+        font-family: Arial;
+        font-size: 10pt;
+        border: 5px solid #67CFF5;
+        width: 200px;
+        height: 100px;
+        display: none;
+        position: fixed;
+        background-color: White;
+        z-index: 999;
+    }
+
+    .modalpayment {
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: black;
+        z-index: 99;
+        opacity: 0.8;
+        filter: alpha(opacity=80);
+        -moz-opacity: 0.8;
+        min-height: 100%;
+        width: 100%;
+    }
+</style>
+<div class="loadingbarpayment" align="center">
+    Loading. Please wait.<br />
+    <br />
+    <img src="loader.gif" alt="" />
+</div>
+<div style="height:300px">
+    @foreach (var coinInfoDto in Model.ParseCoinChainInfo)
+    {
+        <div class="cardPayment" style="float:left;margin:5px;cursor: pointer;width:200px;height: 257px;" onclick="callWallet('@coinInfoDto.Symbol')">
+            <img src="@coinInfoDto.ImageUrl" alt="Avatar" style="width:100%">
+            <div class="containerPayment">
+                <p style="text-align: center;line-height: 25px;font-weight: 600;">@coinInfoDto.NetworkName</p>
+                <p style="text-align: center;line-height: 25px;font-weight: 700;">@coinInfoDto.Price @coinInfoDto.Symbol</p>
+            </div>
+        </div>
+    }
+</div>

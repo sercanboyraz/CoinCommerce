@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Payment Coin",
+  "FriendlyName": "Coin Wallet",
+  "SystemName": "Payments.Coin",
+  "Version": "1.00",
+  "SupportedVersions": [ "4.50" ],
+  "Author": "boyraz team",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Payments.Coin.dll",
+  "Description": "This plugin enables wallet coin payment (stored into database)"
+}
