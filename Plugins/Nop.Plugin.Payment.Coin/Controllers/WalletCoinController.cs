@@ -110,7 +110,7 @@ namespace Nop.Plugin.Payments.Coin.Controllers
                     return Content(await _localizationService.GetResourceAsync("Checkout.RedirectMessage"));
                 }
                 await _workContext.SetCurrentCustomerAsync(await _customerService.GetCustomerByIdAsync(placeOrderResult.PlacedOrder.CustomerId));
-                return RedirectToRoute("CheckoutCompleted", new { orderId = placeOrderResult.PlacedOrder.Id });
+                return Json(new { orderId = placeOrderResult.PlacedOrder.Id });
             }
             return RedirectToRoute("ShoppingCart");
         }

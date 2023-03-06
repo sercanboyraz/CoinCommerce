@@ -67,6 +67,7 @@ namespace Nop.Plugin.Payments.Coin.Components
 
         public IViewComponentResult Invoke()
         {
+            _logger.ErrorAsync("1:1");
             var storeScope = _storeContext.GetActiveStoreScopeConfigurationAsync().Result;
             var manualPaymentSettings = _settingService.LoadSettingAsync<CoinPaymentSettings>(storeScope).Result;
             var model = new PaymentInfoModel(manualPaymentSettings.CoinChainInfo)
@@ -76,32 +77,36 @@ namespace Nop.Plugin.Payments.Coin.Components
                 GasPrice = manualPaymentSettings.GasPrice,
                 GasLimit = manualPaymentSettings.GasLimit,
             };
-
-            var customer = _workContext.GetCurrentCustomerAsync().Result;
-            var store = _storeContext.GetCurrentStoreAsync().Result;
-            var cart = _shoppingCartService.GetShoppingCartAsync(customer, ShoppingCartType.ShoppingCart, store.Id).Result;
-
-            if (!cart.Any())
-                return View("~/");
-
-            //if (_orderSettings.OnePageCheckoutEnabled)
-            //    return View("~/");
-
-            if (_customerService.IsGuestAsync(customer).Result && !_orderSettings.AnonymousCheckoutAllowed)
-                return View("~/");
-
-            decimal? cartTotalPice = _orderTotalCalculationService.GetShoppingCartTotalAsync(cart, manualPaymentSettings.AdditionalFeePercentage).Result.shoppingCartTotal;
-            model.OrderTotal = cartTotalPice;
-
-            foreach (var coinChainInfo in model.ParseCoinChainInfo)
-            {
-                var getCurrencyCode = _currencyService.GetCurrencyByCodeAsync(coinChainInfo.Symbol);
-                if (getCurrencyCode != null)
-                    coinChainInfo.Price = _currencyService.ConvertCurrency(model.OrderTotal.Value, getCurrencyCode.Result.Rate);
-            }
-
             try
             {
+
+                _logger.ErrorAsync("2:1");
+
+                var customer = _workContext.GetCurrentCustomerAsync().Result;
+                var store = _storeContext.GetCurrentStoreAsync().Result;
+                var cart = _shoppingCartService.GetShoppingCartAsync(customer, ShoppingCartType.ShoppingCart, store.Id).Result;
+
+                if (!cart.Any())
+                    return View("~/");
+
+                //if (_orderSettings.OnePageCheckoutEnabled)
+                //    return View("~/");
+
+                if (_customerService.IsGuestAsync(customer).Result && !_orderSettings.AnonymousCheckoutAllowed)
+                    return View("~/");
+
+                decimal? cartTotalPice = _orderTotalCalculationService.GetShoppingCartTotalAsync(cart, manualPaymentSettings.AdditionalFeePercentage).Result.shoppingCartTotal;
+                model.OrderTotal = cartTotalPice;
+
+                _logger.ErrorAsync("3:1");
+                foreach (var coinChainInfo in model.ParseCoinChainInfo)
+                {
+                    var getCurrencyCode = _currencyService.GetCurrencyByCodeAsync(coinChainInfo.Symbol);
+                    if (getCurrencyCode != null)
+                        coinChainInfo.Price = _currencyService.ConvertCurrency(model.OrderTotal.Value, getCurrencyCode.Result.Rate);
+                }
+
+                _logger.ErrorAsync("4:1");
                 var processPaymentRequest = new ProcessPaymentRequest();
                 //if (processPaymentRequest == null)
                 //{
@@ -132,15 +137,15 @@ namespace Nop.Plugin.Payments.Coin.Components
 
                 //foreach (var error in placeOrderResult.Errors)
                 //    model.Warnings.Add(error);
+                _logger.ErrorAsync("5:1");
             }
             catch (Exception exc)
             {
-                _logger.WarningAsync(exc.Message, exc);
+                _logger.ErrorAsync(exc.Message, exc);
                 model.Warnings.Add(exc.Message);
             }
 
-
-
+            _logger.ErrorAsync("6:1");
 
             return View("~/Plugins/Payments.Coin/Views/PaymentInfo.cshtml", model);
         }

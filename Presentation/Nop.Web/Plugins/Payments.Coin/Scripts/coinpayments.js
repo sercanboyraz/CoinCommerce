@@ -45,16 +45,9 @@
                     console.log("valueLimit :   " + valueLimit);
                     ShowProgress();
                     await ethereum.request({ method: 'eth_sendTransaction', params: [transactionParameters] })
-                        .then((txHash) => {
-                            $.ajax({
-                                type: "GET",
-                                url: "/Plugins/PaymentCoin/Confirm?txt=" + txHash,
-                                contentType: "application/json; charset=utf-8",
-                                dataType: "json",
-                                success: function (msg) {
-
-                                }
-                            });
+                        .then(async txHash => {
+                            var internaldata = true;
+                            setInterval(async () => await runData(internaldata, txHash), 3500);
                         })//order tablosunda tutulacak
                         .catch((error) => {
                             $.ajax({
@@ -72,6 +65,25 @@
             }
         });
 };
+
+async function runData(internaldata, txHash) {
+    await ethereum.request({ method: 'eth_getTransactionReceipt', params: [txHash] })
+        .then((resultdata) => {
+            console.log("resultdata = > " + resultdata)
+            if (resultdata != null && resultdata.status == "0x1" && internaldata == true) {
+                internaldata = false;
+                $.ajax({
+                    type: "GET",
+                    url: "/Plugins/PaymentCoin/Confirm?txt=" + txHash,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (msg) {
+                        window.location.href = "/checkout/completed?orderId=" + msg.orderId;
+                    }
+                });
+            }
+        })
+}
 
 async function signed(account) {
     const personalSignResult = document.querySelector('.showSigned');
@@ -109,14 +121,14 @@ function decimalToHex(d, padding) {
 
 function ShowProgress() {
     setTimeout(function () {
-        var modal = $('<div />');
+        var modal = $('<div  style="z-index: 9999;" ><h2>Waiting....</h2></div>');
         modal.addClass("modalpayment");
         $('body').append(modal);
         var loading = $(".loading");
         loading.show();
-        var top = Math.max($(window).height() / 2 - loading[0].offsetHeight / 2, 0);
-        var left = Math.max($(window).width() / 2 - loading[0].offsetWidth / 2, 0);
-        loading.css({ top: top, left: left });
+        //var top = Math.max($(window).height() / 2 - loading[0].offsetHeight / 2, 0);
+        //var left = Math.max($(window).width() / 2 - loading[0].offsetWidth / 2, 0);
+        //loading.css({ top: top, left: left });
     }, 200);
 }
 
