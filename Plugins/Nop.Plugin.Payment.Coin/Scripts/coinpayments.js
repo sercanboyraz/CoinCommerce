@@ -121,7 +121,7 @@ function decimalToHex(d, padding) {
 
 function ShowProgress() {
     setTimeout(function () {
-        var modal = $('<div  style="z-index: 9999;" ><h2>Waiting....</h2></div>');
+        var modal = $('<div  style="z-index: 9999;" ><div class="loader" style="color: white;position: absolute;display: inline-block;margin: 0px auto;right: 0;left: 0;text-align: center;margin-top: 30%;"></div></div>');
         modal.addClass("modalpayment");
         $('body').append(modal);
         var loading = $(".loading");
