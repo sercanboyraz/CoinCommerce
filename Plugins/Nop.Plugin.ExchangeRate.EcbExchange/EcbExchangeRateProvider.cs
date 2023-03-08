@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using Nop.Core;
 using Nop.Core.Http;
-using Nop.Plugin.ExchangeRate.EcbExchange.NewFolder;
+using Nop.Plugin.ExchangeRate.EcbExchange.Dto;
 using Nop.Services.Configuration;
 using Nop.Services.Directory;
 using Nop.Services.Localization;

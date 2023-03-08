@@ -47,7 +47,7 @@
                     await ethereum.request({ method: 'eth_sendTransaction', params: [transactionParameters] })
                         .then(async txHash => {
                             var internaldata = true;
-                            setInterval(runData(internaldata, txHash), 5000);
+                            setInterval(async () => await runData(internaldata, txHash), 3500);
                         })//order tablosunda tutulacak
                         .catch((error) => {
                             $.ajax({
@@ -69,7 +69,7 @@
 async function runData(internaldata, txHash) {
     await ethereum.request({ method: 'eth_getTransactionReceipt', params: [txHash] })
         .then((resultdata) => {
-            console.log(JSON.stringify(resultdata))
+            console.log("resultdata = > " + JSON.stringify(resultdata))
             if (resultdata != null && resultdata.status == "0x1" && internaldata == true) {
                 internaldata = false;
                 $.ajax({

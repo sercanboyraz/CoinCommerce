@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Nop.Plugin.ExchangeRate.EcbExchange.NewFolder
+namespace Nop.Plugin.ExchangeRate.EcbExchange.Dto
 {
     public class CoinToken
     {
