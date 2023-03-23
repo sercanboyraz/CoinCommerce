@@ -901,9 +901,11 @@ label, label + * {
   vertical-align: middle;
 }
 
-.header-selectors-wrapper select {
-  width: 100%;
-}
+    .header-selectors-wrapper select {
+        width: 100%;
+        background: transparent;
+        color: white;
+    }
 
 .language-list {
   max-width: 100%;
@@ -7836,11 +7838,13 @@ label, label + * {
     line-height: 43px;
   }
 
-  .header-selectors-wrapper select {
-    height: 25px;
-    padding: 4px;
-    font-size: 12px;
-  }
+    .header-selectors-wrapper select {
+        height: 25px;
+        padding: 4px;
+        font-size: 12px;
+        background: transparent;
+        color: white;
+    }
 
   .language-list {
     text-align: right;
