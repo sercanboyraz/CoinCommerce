@@ -106,12 +106,12 @@
                                 }
                                 <td class="product">
                                     <a href="@Url.RouteUrl("Product", new {SeName = item.ProductSeName})" class="product-name">@item.ProductName</a>
-                                    @if (!string.IsNullOrEmpty(item.AttributeInfo))
+                                    @*@if (!string.IsNullOrEmpty(item.AttributeInfo))
                                     {
                                         <div class="attributes">
                                             @Html.Raw(item.AttributeInfo)
                                         </div>
-                                    }
+                                    }*@
                                     @if (!string.IsNullOrEmpty(item.RecurringInfo))
                                     {
                                         <div class="recurring-info">

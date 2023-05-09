@@ -49,7 +49,7 @@
     }
 
 </style>
-<div style="height:300px">
+<div style="height:300px; display: flex;">
     @foreach (var coinInfoDto in Model.ParseCoinChainInfo)
     {
         <div class="cardPayment" style="float:left;margin:5px;cursor: pointer;width:200px;height: 257px;" onclick="callWallet('@coinInfoDto.Symbol')">

@@ -517,7 +517,7 @@ namespace Nop.Services.Catalog
         public virtual decimal Round(decimal value, RoundingType roundingType)
         {
             //default round (Rounding001)
-            var rez = Math.Round(value, 2);
+            var rez = Math.Round(value, 6);
             var fractionPart = (rez - Math.Truncate(rez)) * 10;
 
             //cash rounding not needed

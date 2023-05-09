@@ -73,7 +73,8 @@ namespace Nop.Plugin.ExchangeRate.EcbExchange
                     UpdatedOn = DateTime.UtcNow
                 }
             };
-
+            List<CoinToken> convertData = new List<CoinToken>();
+            DateTime dateupdate = DateTime.UtcNow;
             //get exchange rates to euro from European Central Bank
             try
             {
@@ -93,7 +94,7 @@ namespace Nop.Plugin.ExchangeRate.EcbExchange
                 var dailyRates = document.SelectSingleNode("gesmes:Envelope/ns:Cube/ns:Cube", namespaces);
                 if (!DateTime.TryParseExact(dailyRates.Attributes["time"].Value, "yyyy-MM-dd", null, DateTimeStyles.None, out var updateDate))
                     updateDate = DateTime.UtcNow;
-
+                dateupdate = updateDate;
                 foreach (XmlNode currency in dailyRates.ChildNodes)
                 {
                     //get rate
@@ -120,7 +121,7 @@ namespace Nop.Plugin.ExchangeRate.EcbExchange
                     {
                         // Parse the response body
                         var dataObjects = response.Content.ReadAsStringAsync().Result;
-                        var convertData = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CoinToken>>(dataObjects);
+                        convertData = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CoinToken>>(dataObjects);
                         var getBTC = convertData.FirstOrDefault(x => x.symbol == "BTCEUR");
                         ratesToEuro.Add(new Core.Domain.Directory.ExchangeRate()
                         {
@@ -142,10 +143,12 @@ namespace Nop.Plugin.ExchangeRate.EcbExchange
                             Rate = 1 / getBNB.price,
                             UpdatedOn = updateDate
                         });
+
+
                     }
                     else
                     {
-                        await _logger.ErrorAsync("Coin-1 exchange rate provider.StatusCode" + (int)response.StatusCode + ". ReasonPhrase" + response.ReasonPhrase);
+                        await _logger.ErrorAsync("Coin-1 exchange rate provider.StatusCode" + (int)response.StatusCode + ". ReasonPhrase" + response.Content);
                     }
                 }
                 catch (Exception ex)
@@ -166,6 +169,21 @@ namespace Nop.Plugin.ExchangeRate.EcbExchange
             var exchangeRateCurrency = ratesToEuro.FirstOrDefault(rate => rate.CurrencyCode.Equals(exchangeRateCurrencyCode, StringComparison.InvariantCultureIgnoreCase));
             if (exchangeRateCurrency == null)
                 throw new NopException(await _localizationService.GetResourceAsync("Plugins.ExchangeRate.EcbExchange.Error"));
+
+            var getUSD = ratesToEuro.FirstOrDefault(rate => rate.CurrencyCode.Equals("usd", StringComparison.InvariantCultureIgnoreCase));
+            ratesToEuro.Add(new Core.Domain.Directory.ExchangeRate()
+            {
+                CurrencyCode = "USDT",
+                Rate = getUSD.Rate,
+                UpdatedOn = dateupdate
+            });
+
+            ratesToEuro.Add(new Core.Domain.Directory.ExchangeRate()
+            {
+                CurrencyCode = "USDC",
+                Rate = getUSD.Rate,
+                UpdatedOn = dateupdate
+            });
 
             //return result for the selected (not euro) currency
             return ratesToEuro.Select(rate => new Core.Domain.Directory.ExchangeRate

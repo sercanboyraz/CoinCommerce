@@ -2083,6 +2083,7 @@ label, label + * {
 .gallery .picture-thumbs {
   overflow: hidden;
   font-size: 0;
+  display:none;
 }
 
 .gallery .picture-thumbs .thumb-item {
