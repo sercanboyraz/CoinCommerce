@@ -52,11 +52,15 @@
             <div class="containerPayment">
                 <p style="text-align: center;line-height: 25px;font-weight: 600;">@coinInfoDto.NetworkName</p>
                 <p style="text-align: center;line-height: 25px;font-weight: 700;">@coinInfoDto.Price @coinInfoDto.Symbol</p>
+
             </div>
         </div>
     }
 
     <script asp-location="Footer">
-        console.log("asdasdasdasdasdsadsadsa")
+        var divsToHide = document.getElementsByClassName("complete-button");
+        for (var i = 0; i < divsToHide.length; i++) {
+            divsToHide[i].style.display = "none";
+        }
     </script>
 </div>

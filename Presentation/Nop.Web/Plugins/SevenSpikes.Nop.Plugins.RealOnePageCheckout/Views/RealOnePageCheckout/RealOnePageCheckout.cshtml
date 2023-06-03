@@ -247,7 +247,7 @@
                                     </ul>
                                 </div>
                                 <div class="terms-of-service" ng-show="vm.config['termsOfServiceOnOrderConfirmPage']">
-                                    <input type="checkbox" id="terms-of-service" name="termsOfService" ng-model="termsOfService" ng-required="vm.config['termsOfServiceOnOrderConfirmPage']" checked />
+                                    <input type="checkbox" id="terms-of-service" name="termsOfService" ng-model="termsOfService" ng-required="vm.config['termsOfServiceOnOrderConfirmPage']" ng-change="" />
                                     <label for="terms-of-service"><span>@T("Checkout.TermsOfService.IAccept")</span><a class="read" id="read-terms">@T("Checkout.TermsOfService.Read")</a></label>
                                     <script asp-location="Footer">
                                         $(document).ready(function () {
