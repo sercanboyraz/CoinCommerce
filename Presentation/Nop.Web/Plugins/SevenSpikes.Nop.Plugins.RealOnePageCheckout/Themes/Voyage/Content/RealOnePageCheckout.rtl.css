@@ -1,0 +1,44 @@
+
+.ropc .method-list li {
+    text-align: right;
+}
+.ropc .method-list label:after {
+    right: -17px;
+    left: auto;
+}
+.ropc .coupon-code {
+    padding-left: 15px;
+    padding-right: 0;
+}
+.ropc .current-code button,
+.ropc .cart-total button {
+    margin: 0 5px 0 0;
+}
+
+@media all and (min-width: 768px) {
+
+    .ropc .ship-to-same-address,
+    .ropc .pickup-in-store,
+    .ropc .use-reward-points {
+        padding-right: 3px;
+        padding-left: 0;
+        text-align: right;
+    }
+    .ropc .payment-info table {
+        text-align: right;
+    }
+    .ropc .payment-info .form tr {
+        margin-right: 0;
+        margin-left: auto;
+    }
+}
+
+@media all and (min-width: 1025px) {
+
+    .ropc .panels-left {
+        float: right;
+    }
+    .ropc .panels-right {
+        float: left;
+    }
+}

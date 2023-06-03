@@ -85,6 +85,7 @@ namespace Nop.Plugin.Payments.Coin.Controllers
         public async Task<IActionResult> Confirm(string txt)
         {
             var processPaymentRequest = HttpContext.Session.Get<ProcessPaymentRequest>("OrderPaymentInfo");
+            processPaymentRequest.PaymentMethodSystemName = "Payments.Coin";
             if (txt.IsNullOrWhiteSpace())
             {
                 await _logger.ErrorAsync("txt record is null!!!" + Newtonsoft.Json.JsonConvert.SerializeObject(processPaymentRequest));

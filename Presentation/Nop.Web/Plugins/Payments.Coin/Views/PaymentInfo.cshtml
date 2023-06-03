@@ -2,12 +2,7 @@
     Layout = "";
 }
 @model Nop.Plugin.Payments.Coin.Models.PaymentInfoModel
-<script type="text/javascript">
-    var divsToHide = document.getElementsByClassName("payment-info-next-step-button");
-    for (var i = 0; i < divsToHide.length; i++) {
-        divsToHide[i].style.display = "none";
-    }
-</script>
+
 <style>
     .cardPayment {
         box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
@@ -60,4 +55,8 @@
             </div>
         </div>
     }
+
+    <script asp-location="Footer">
+        console.log("asdasdasdasdasdsadsadsa")
+    </script>
 </div>

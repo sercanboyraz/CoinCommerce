@@ -1,0 +1,229 @@
+﻿@model RealOnePageCheckoutSettingsModel
+
+@{
+    Layout = AdminViewLocations.AdminLayoutViewPath;
+
+    NopHtml.SetActiveMenuItemSystemName("SevenSpikes.RealOnePageCheckout.Admin.Submenus.Settings");
+}
+
+<script type="text/javascript" asp-location="Footer">
+    (function() {
+
+        function showPluginSettings() {
+            if ($('#@Html.IdFor(model => model.EnableRealOnePageCheckout)').is(':checked') == true) {
+                $('.pluginSettings, .billing-address-settings, .shipping-address-settings, .payment-methods-ajax-settings, .shipping-methods-ajax-settings, .other-ajax-settings').show();
+            } else {
+                $('.pluginSettings, .billing-address-settings, .shipping-address-settings, .payment-methods-ajax-settings, .shipping-methods-ajax-settings, .other-ajax-settings').hide();
+            }
+        }
+
+        function enableCustomOverlay(overrideForStoreSelector, selector) {
+
+            if ($('#' + overrideForStoreSelector).length === 0) {
+                return;
+            }
+
+            var multiselect = $('#' + selector).data("kendoMultiSelect");
+
+            var isEnabled = $('#' + overrideForStoreSelector).is(':checked');
+
+            multiselect.enable(isEnabled);
+        }
+
+        $(document).ready(function () {
+            var disabledBillingAddressFields = [@Html.Raw(string.Join(",", Model.AjaxUpdatePaymentMethodsOnAddressFieldsUpdate.Select(x => string.Format("'{0}'", x))))];
+            var disabledShippingAddressFields = [@Html.Raw(string.Join(",", Model.AjaxUpdateShippingMethodsOnAddressFieldsUpdate.Select(x => string.Format("'{0}'", x))))];
+            var disabledFieldsFromOrderTotal = [@Html.Raw(string.Join(",", Model.AjaxUpdateOrderTotalBasedOnTaxAddressOnAddressFieldsChange.Select(x => string.Format("'{0}'", x))))];
+
+                $("#@Html.IdFor(model => model.EnableRealOnePageCheckout)").change(showPluginSettings);
+
+                showPluginSettings();
+                
+                $("#@Html.IdFor(model => model.PersistedBillingAddressFields)")
+                    .kendoMultiSelect({
+                        autoClose: false,
+                        dataBound: function(e) {
+                            var tagList = e.sender.tagList.children("li");
+
+                            var tagElements, tagText;
+
+                            for (var i = 0, length = tagList.length; i < length; i++) {
+
+                                tagElements = tagList.eq(i).children();
+                                tagText = tagElements.first().text();
+
+                                if (disabledBillingAddressFields.indexOf(tagText) > -1) {
+                                    tagElements.last().remove();
+                                    tagElements.parent()
+                                        .addClass("k-state-required")
+                                        .attr('title',
+                                            '@T("SevenSpikes.RealOnePageCheckout.Admin.Settings.PersistedBillingAddressFields.RequiredField")');
+                                }
+
+                                @{
+                                    if (Model.TaxBasedOn == TaxBasedOn.BillingAddress)
+                                    {
+                                        <text>
+                                else if (disabledFieldsFromOrderTotal.indexOf(tagText) > -1) {
+                                    tagElements.last().remove();
+                                    tagElements.parent()
+                                        .addClass("k-state-required")
+                                        .attr('title',
+                                            '@T("SevenSpikes.RealOnePageCheckout.Admin.Settings.AjaxUpdateOrderTotalBasedOnTaxAddressOnAddressFieldsChange.RequiredField")');
+                                }
+                                </text>
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                $("#@(Html.IdFor(model => model.PersistedBillingAddressFields))_taglist")
+                    .kendoTooltip({
+                        filter: ".k-state-required",
+                        width: 120,
+                        position: "top"
+                    })
+                    .data("kendoTooltip");
+
+                $("#@Html.IdFor(model => model.PersistedShippingAddressFields)")
+                    .kendoMultiSelect({
+                        autoClose: false,
+                        dataBound: function(e) {
+                            var tagList = e.sender.tagList.children("li");
+
+                            var tagElements, tagText;
+
+                            for (var i = 0, length = tagList.length; i < length; i++) {
+
+                                tagElements = tagList.eq(i).children();
+                                tagText = tagElements.first().text();
+
+                                if (disabledShippingAddressFields.indexOf(tagText) > -1) {
+                                    tagElements.last().remove();
+                                    tagElements.parent()
+                                        .addClass("k-state-required")
+                                        .attr('title',
+                                            '@T("SevenSpikes.RealOnePageCheckout.Admin.Settings.PersistedShippingAddressFields.RequiredField")');
+                                }
+
+                                @{
+                                    if (Model.TaxBasedOn == TaxBasedOn.ShippingAddress)
+                                    {
+                                        <text>
+                                else if (disabledFieldsFromOrderTotal.indexOf(tagText) > -1) {
+                                    tagElements.last().remove();
+                                    tagElements.parent()
+                                        .addClass("k-state-required")
+                                        .attr('title',
+                                            '@T("SevenSpikes.RealOnePageCheckout.Admin.Settings.AjaxUpdateOrderTotalBasedOnTaxAddressOnAddressFieldsChange.RequiredField")');
+                                }
+                                </text>
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                $("#@(Html.IdFor(model => model.PersistedShippingAddressFields))_taglist")
+                    .kendoTooltip({
+                        filter: ".k-state-required",
+                        width: 120,
+                        position: "top"
+                    })
+                    .data("kendoTooltip");
+
+                $("#@Html.IdFor(model => model.AjaxUpdatePaymentMethodsOnAddressFieldsUpdate)")
+                    .kendoMultiSelect({
+                        autoClose: false
+                    });
+
+                $("#@Html.IdFor(model => model.AjaxUpdateShippingMethodsOnAddressFieldsUpdate)")
+                    .kendoMultiSelect({
+                        autoClose: false
+                    });
+
+                $("#@Html.IdFor(model => model.AjaxUpdateOrderTotalBasedOnTaxAddressOnAddressFieldsChange)")
+                    .kendoMultiSelect({
+                        autoClose: false
+                    });
+
+                $("#@Html.IdFor(model => model.PersistedBillingAddressFields_OverrideForStore)")
+                    .change(function() {
+                        enableCustomOverlay('@Html.IdFor(model => model.PersistedBillingAddressFields_OverrideForStore)', '@Html.IdFor(model => model.PersistedBillingAddressFields)');
+                    });
+
+                enableCustomOverlay('@Html.IdFor(model => model.PersistedBillingAddressFields_OverrideForStore)',
+                    '@Html.IdFor(model => model.PersistedBillingAddressFields)');
+
+                $("#@Html.IdFor(model => model.PersistedShippingAddressFields_OverrideForStore)")
+                    .change(function() {
+                        enableCustomOverlay('@Html.IdFor(model => model.PersistedShippingAddressFields_OverrideForStore)', '@Html.IdFor(model => model.PersistedShippingAddressFields)');
+                    });
+
+                enableCustomOverlay('@Html.IdFor(model => model.PersistedShippingAddressFields_OverrideForStore)',
+                    '@Html.IdFor(model => model.PersistedShippingAddressFields)');
+
+                $("#@Html.IdFor(model => model.AjaxUpdatePaymentMethodsOnAddressFieldsUpdate_OverrideForStore)")
+                    .change(function() {
+                        enableCustomOverlay('@Html.IdFor(model => model.AjaxUpdatePaymentMethodsOnAddressFieldsUpdate_OverrideForStore)', '@Html.IdFor(model => model.AjaxUpdatePaymentMethodsOnAddressFieldsUpdate)');
+                    });
+
+                enableCustomOverlay('@Html.IdFor(model => model.AjaxUpdatePaymentMethodsOnAddressFieldsUpdate_OverrideForStore)', '@Html.IdFor(model => model.AjaxUpdatePaymentMethodsOnAddressFieldsUpdate)');
+
+                $("#@Html.IdFor(model => model.AjaxUpdateShippingMethodsOnAddressFieldsUpdate_OverrideForStore)")
+                    .change(function() {
+                        enableCustomOverlay('@Html.IdFor(model => model.AjaxUpdateShippingMethodsOnAddressFieldsUpdate_OverrideForStore)', '@Html.IdFor(model => model.AjaxUpdateShippingMethodsOnAddressFieldsUpdate)');
+                    });
+
+                enableCustomOverlay('@Html.IdFor(model => model.AjaxUpdateShippingMethodsOnAddressFieldsUpdate_OverrideForStore)', '@Html.IdFor(model => model.AjaxUpdateShippingMethodsOnAddressFieldsUpdate)');
+
+                $("#@Html.IdFor(model => model.AjaxUpdateOrderTotalBasedOnTaxAddressOnAddressFieldsChange_OverrideForStore)")
+                    .change(function() {
+                        enableCustomOverlay('@Html.IdFor(model => model.AjaxUpdateOrderTotalBasedOnTaxAddressOnAddressFieldsChange_OverrideForStore)', '@Html.IdFor(model => model.AjaxUpdateOrderTotalBasedOnTaxAddressOnAddressFieldsChange)');
+                    });
+
+                enableCustomOverlay('@Html.IdFor(model => model.AjaxUpdateOrderTotalBasedOnTaxAddressOnAddressFieldsChange_OverrideForStore)', '@Html.IdFor(model => model.AjaxUpdateOrderTotalBasedOnTaxAddressOnAddressFieldsChange)');
+            });
+    })();
+</script>
+
+<script type="text/javascript" asp-location="Footer">
+    $(document)
+        .ready(function() {
+            bindBootstrapTabSelectEvent('onepagecheckout-settings-edit');
+        });
+</script>
+
+<form method="post">
+    <nop-antiforgery-token />
+
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("SevenSpikes.RealOnePageCheckout.Admin.Settings")
+        </h1>
+        <div class="float-right">
+            <button type="submit" name="save" class="btn bg-primary">
+                <i class="far fa-save"></i>
+                @T("Admin.Common.Save")
+            </button>
+        </div>
+    </div>
+    
+    <section class="content">
+        <div class="form-horizontal">
+            @await Html.TrialMessageAsync(Model.IsTrialVersion, Plugin.Name, Plugin.UrlInStore)
+
+            @await Component.InvokeAsync("StoreScopeConfiguration")
+
+            <nop-tabs id="onepagecheckout-settings-edit">
+                <nop-tab asp-name="tab-general-settings" asp-default="true" asp-title="@T("SevenSpikes.RealOnePageCheckout.Admin.Settings.GeneralSettings")">@{ await Html.RenderPartialAsync("_Settings.General", Model); }</nop-tab>
+                <nop-tab asp-name="tab-billing-address-settings" asp-title="@T("SevenSpikes.RealOnePageCheckout.Admin.Settings.BillingAddressSettings")">@{ await Html.RenderPartialAsync("_Settings.BillingAddress", Model); }</nop-tab>
+                <nop-tab asp-name="tab-shipping-address-settings" asp-title="@T("SevenSpikes.RealOnePageCheckout.Admin.Settings.ShippingAddressSettings")">@{ await Html.RenderPartialAsync("_Settings.ShippingAddress", Model); }</nop-tab>
+                <nop-tab asp-name="tab-payment-methods-ajax-settings" asp-title="@T("SevenSpikes.RealOnePageCheckout.Admin.Settings.PaymentMethodsAjaxSettings")">@{ await Html.RenderPartialAsync("_Settings.PaymentMethods", Model); }</nop-tab>
+                <nop-tab asp-name="tab-shipping-methods-ajax-settings" asp-title="@T("SevenSpikes.RealOnePageCheckout.Admin.Settings.ShippingMethodsAjaxSettings")">@{ await Html.RenderPartialAsync("_Settings.ShippingMethods", Model); }</nop-tab>
+                <nop-tab asp-name="tab-other-ajax-settings" asp-title="@T("SevenSpikes.RealOnePageCheckout.Admin.Settings.OrderTotalAjaxSettings")">@{ await Html.RenderPartialAsync("_Settings.OrderTotal", Model); }</nop-tab>
+            </nop-tabs>
+        </div>
+    </section>
+</form>

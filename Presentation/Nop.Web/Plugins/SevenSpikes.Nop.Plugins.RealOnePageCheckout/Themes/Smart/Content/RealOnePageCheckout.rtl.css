@@ -1,0 +1,53 @@
+
+.ropc .payment-logo,
+.ropc .payment-details {
+    text-align: right;
+}
+.ropc .payment-info td {
+    text-align: right;
+}
+.ropc .coupon-box button,
+.ropc .giftcard-box button {
+    margin: 0 -35px 5px 0;
+    padding: 10px 40px 10px 15px;
+}
+.ropc .current-code button {
+    margin: 0 5px 0 0 !important;
+}
+.ropc .cart-total {
+    text-align: right;
+}
+.ropc .cart-total button {
+    margin: 0 0 0 -17px !important;
+}
+.ropc .addon-buttons {
+    text-align: left;
+}
+.ropc .addon-buttons > * {
+    margin: 0 5px 5px 0 ;
+}
+
+@media all and (max-width: 1024px) {
+	
+    .ropc .cart tr {
+        float: right;
+    }
+}
+
+@media all and (min-width: 1025px) {
+	
+.ropc .checkout-attributes .section-body {
+	text-align: right;
+}
+.ropc .order-totals-panel {
+	margin: 0 auto 0 0 !important;
+}
+.ropc .terms-of-service,
+	.ropc .complete-button {
+	margin: 0 auto 30px 0;
+}
+.ropc .error-list{
+	margin: 0 auto 20px 0;
+}
+
+}

@@ -150,6 +150,10 @@
     {
       "SystemName": "SevenSpikes.Theme.Emporium",
       "Version": "4.5"
+    },
+    {
+      "SystemName": "SevenSpikes.Nop.Plugins.RealOnePageCheckout",
+      "Version": "4.5"
     }
   ],
   "PluginNamesToUninstall": [],
