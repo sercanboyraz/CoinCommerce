@@ -31,6 +31,8 @@ namespace Nop.Web.Models.Customer
             public int LicenseId { get; set; }
 
             public DateTime CreatedOn { get; set; }
+            public int? UploadId { get; internal set; }
+            public string UploadPath { get; internal set; }
         }
 
         #endregion

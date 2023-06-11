@@ -362,6 +362,7 @@ namespace Nop.Tests
             services.AddTransient<IImportManager, ImportManager>();
             services.AddTransient<IPdfService, PdfService>();
             services.AddTransient<IUploadService, UploadService>();
+            services.AddTransient<IUpload, UploadServices>();
             services.AddTransient<IThemeProvider, ThemeProvider>();
             services.AddTransient<IExternalAuthenticationService, ExternalAuthenticationService>();
             services.AddScoped<IBBCodeHelper, BBCodeHelper>();

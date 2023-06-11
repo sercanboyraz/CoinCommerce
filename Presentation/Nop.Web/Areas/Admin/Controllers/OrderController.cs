@@ -68,6 +68,8 @@ namespace Nop.Web.Areas.Admin.Controllers
         private readonly IWorkContext _workContext;
         private readonly IWorkflowMessageService _workflowMessageService;
         private readonly OrderSettings _orderSettings;
+        private readonly IUpload _uploadService;
+        
 
         #endregion
 
@@ -101,7 +103,8 @@ namespace Nop.Web.Areas.Admin.Controllers
             IShoppingCartService shoppingCartService,
             IWorkContext workContext,
             IWorkflowMessageService workflowMessageService,
-            OrderSettings orderSettings)
+            OrderSettings orderSettings,
+            IUpload uploadService)
         {
             _addressAttributeParser = addressAttributeParser;
             _addressService = addressService;
@@ -132,6 +135,7 @@ namespace Nop.Web.Areas.Admin.Controllers
             _workContext = workContext;
             _workflowMessageService = workflowMessageService;
             _orderSettings = orderSettings;
+            _uploadService = uploadService;
         }
 
         #endregion
@@ -875,7 +879,13 @@ namespace Nop.Web.Areas.Admin.Controllers
 
             //prepare model
             var model = await _orderModelFactory.PrepareOrderModelAsync(null, order);
-
+            foreach (var item in model.Items)
+            {
+                if (item.UploadId.HasValue)
+                {
+                    item.UploadUrl = await _uploadService.GetUploadReceiptUrl(item.UploadId.Value);
+                }
+            }
             return View(model);
         }
 

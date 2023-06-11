@@ -93,6 +93,7 @@ namespace Nop.Web.Areas.Admin.Factories
         private readonly ShippingSettings _shippingSettings;
         private readonly IUrlRecordService _urlRecordService;
         private readonly TaxSettings _taxSettings;
+        private readonly IUpload _uploadService;
 
         #endregion
 
@@ -140,7 +141,8 @@ namespace Nop.Web.Areas.Admin.Factories
             OrderSettings orderSettings,
             ShippingSettings shippingSettings,
             IUrlRecordService urlRecordService,
-            TaxSettings taxSettings)
+            TaxSettings taxSettings,
+            IUpload uploadService)
         {
             _addressSettings = addressSettings;
             _catalogSettings = catalogSettings;
@@ -185,6 +187,7 @@ namespace Nop.Web.Areas.Admin.Factories
             _shippingSettings = shippingSettings;
             _urlRecordService = urlRecordService;
             _taxSettings = taxSettings;
+            _uploadService = uploadService; 
         }
 
         #endregion
@@ -300,7 +303,12 @@ namespace Nop.Web.Areas.Admin.Factories
                     SubTotalExclTaxValue = orderItem.PriceExclTax,
                     AttributeInfo = orderItem.AttributeDescription
                 };
-
+                if (orderItem.UploadId.HasValue)
+                {
+                    var uploadPath = await _uploadService.GetUploadReceiptUrl(orderItem.UploadId.Value);
+                    orderItemModel.UploadUrl = uploadPath;
+                    orderItemModel.UploadId = orderItem.UploadId.Value;
+                }
                 //fill in additional values (not existing in the entity)
                 orderItemModel.Sku = await _productService.FormatSkuAsync(product, orderItem.AttributesXml);
                 orderItemModel.VendorName = (await _vendorService.GetVendorByIdAsync(product.VendorId))?.Name;

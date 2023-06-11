@@ -1,8 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Nop.Core;
 using Nop.Core.Domain.Customers;
+using Nop.Core.Infrastructure;
 using Nop.Services.Catalog;
 using Nop.Services.Localization;
 using Nop.Services.Media;
@@ -19,12 +21,14 @@ namespace Nop.Web.Controllers
         private readonly IOrderService _orderService;
         private readonly IProductService _productService;
         private readonly IWorkContext _workContext;
+        private readonly INopFileProvider _fileProvider;
 
         public DownloadController(CustomerSettings customerSettings,
             IDownloadService downloadService,
             ILocalizationService localizationService,
             IOrderService orderService,
             IProductService productService,
+            INopFileProvider fileProvider,
             IWorkContext workContext)
         {
             _customerSettings = customerSettings;
@@ -33,8 +37,9 @@ namespace Nop.Web.Controllers
             _orderService = orderService;
             _productService = productService;
             _workContext = workContext;
+            _fileProvider = fileProvider;
         }
-        
+
         //ignore SEO friendly URLs checks
         [CheckLanguageSeoCode(true)]
         public virtual async Task<IActionResult> Sample(int productId)
@@ -57,10 +62,10 @@ namespace Nop.Web.Controllers
 
             if (download.DownloadBinary == null)
                 return Content("Download data is not available any more.");
-            
+
             var fileName = !string.IsNullOrWhiteSpace(download.Filename) ? download.Filename : product.Id.ToString();
             var contentType = !string.IsNullOrWhiteSpace(download.ContentType) ? download.ContentType : MimeTypes.ApplicationOctetStream;
-            return new FileContentResult(download.DownloadBinary, contentType) { FileDownloadName = fileName + download.Extension }; 
+            return new FileContentResult(download.DownloadBinary, contentType) { FileDownloadName = fileName + download.Extension };
         }
 
         //ignore SEO friendly URLs checks
@@ -72,7 +77,7 @@ namespace Nop.Web.Controllers
                 return InvokeHttp404();
 
             var order = await _orderService.GetOrderByIdAsync(orderItem.OrderId);
-            
+
             if (!await _orderService.IsDownloadAllowedAsync(orderItem))
                 return Content("Downloads are not allowed");
 
@@ -98,7 +103,7 @@ namespace Nop.Web.Controllers
 
             if (!product.UnlimitedDownloads && orderItem.DownloadCount >= product.MaxNumberOfDownloads)
                 return Content(string.Format(await _localizationService.GetResourceAsync("DownloadableProducts.ReachedMaximumNumber"), product.MaxNumberOfDownloads));
-           
+
             if (download.UseDownloadUrl)
             {
                 //increase download
@@ -110,10 +115,10 @@ namespace Nop.Web.Controllers
                 //In this case, it is not relevant. Url may not be local.
                 return new RedirectResult(download.DownloadUrl);
             }
-            
+
             //binary download
             if (download.DownloadBinary == null)
-                    return Content("Download data is not available any more.");
+                return Content("Download data is not available any more.");
 
             //increase download
             orderItem.DownloadCount++;
@@ -122,8 +127,10 @@ namespace Nop.Web.Controllers
             //return result
             var fileName = !string.IsNullOrWhiteSpace(download.Filename) ? download.Filename : product.Id.ToString();
             var contentType = !string.IsNullOrWhiteSpace(download.ContentType) ? download.ContentType : MimeTypes.ApplicationOctetStream;
-            return new FileContentResult(download.DownloadBinary, contentType) { FileDownloadName = fileName + download.Extension };  
+            return new FileContentResult(download.DownloadBinary, contentType) { FileDownloadName = fileName + download.Extension };
         }
+
+
 
         //ignore SEO friendly URLs checks
         [CheckLanguageSeoCode(true)]
@@ -201,7 +208,7 @@ namespace Nop.Web.Controllers
             var download = await _downloadService.GetDownloadByIdAsync(orderNote.DownloadId);
             if (download == null)
                 return Content("Download is not available any more.");
-            
+
             //A warning (SCS0027 - Open Redirect) from the "Security Code Scan" analyzer may appear at this point. 
             //In this case, it is not relevant. Url may not be local.
             if (download.UseDownloadUrl)

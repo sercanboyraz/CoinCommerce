@@ -209,6 +209,7 @@ namespace Nop.Web.Framework.Infrastructure
             services.AddScoped<IImportManager, ImportManager>();
             services.AddScoped<IPdfService, PdfService>();
             services.AddScoped<IUploadService, UploadService>();
+            services.AddScoped<IUpload, UploadServices>();
             services.AddScoped<IThemeProvider, ThemeProvider>();
             services.AddScoped<IThemeContext, ThemeContext>();
             services.AddScoped<IExternalAuthenticationService, ExternalAuthenticationService>();

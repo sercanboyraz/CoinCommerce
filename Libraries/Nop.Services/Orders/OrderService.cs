@@ -682,7 +682,7 @@ namespace Nop.Services.Orders
                         //expiration date
                         if (product.DownloadExpirationDays.HasValue)
                         {
-                            if (order.PaidDateUtc.Value.AddDays(product.DownloadExpirationDays.Value) > DateTime.UtcNow)
+                            if (order.PaidDateUtc.Value.AddDays(product.DownloadExpirationDays.Value == 0 ? 5 : product.DownloadExpirationDays.Value) > DateTime.UtcNow)
                             {
                                 return true;
                             }

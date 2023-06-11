@@ -78,6 +78,8 @@ namespace Nop.Web.Factories
         private readonly SecuritySettings _securitySettings;
         private readonly TaxSettings _taxSettings;
         private readonly VendorSettings _vendorSettings;
+        private readonly IUpload _uploadService;
+
 
         #endregion
 
@@ -119,7 +121,8 @@ namespace Nop.Web.Factories
             RewardPointsSettings rewardPointsSettings,
             SecuritySettings securitySettings,
             TaxSettings taxSettings,
-            VendorSettings vendorSettings)
+            VendorSettings vendorSettings,
+            IUpload uploadService)
         {
             _addressSettings = addressSettings;
             _captchaSettings = captchaSettings;
@@ -158,6 +161,7 @@ namespace Nop.Web.Factories
             _securitySettings = securitySettings;
             _taxSettings = taxSettings;
             _vendorSettings = vendorSettings;
+            _uploadService = uploadService;
         }
 
         #endregion
@@ -784,7 +788,6 @@ namespace Nop.Web.Factories
             {
                 var order = await _orderService.GetOrderByIdAsync(item.OrderId);
                 var product = await _productService.GetProductByIdAsync(item.ProductId);
-
                 var itemModel = new CustomerDownloadableProductsModel.DownloadableProductsModel
                 {
                     OrderItemGuid = item.OrderItemGuid,
@@ -796,6 +799,12 @@ namespace Nop.Web.Factories
                     ProductAttributes = item.AttributeDescription,
                     ProductId = item.ProductId
                 };
+                if (item.UploadId.HasValue)
+                {
+                    var uploadPath = await _uploadService.GetUploadReceiptUrl(item.UploadId.Value);
+                    itemModel.UploadPath = uploadPath;
+                    itemModel.UploadId = item.UploadId.Value;
+                }
                 model.Items.Add(itemModel);
 
                 if (await _orderService.IsDownloadAllowedAsync(item))

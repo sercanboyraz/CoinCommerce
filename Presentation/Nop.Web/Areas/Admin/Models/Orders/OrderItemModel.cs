@@ -23,6 +23,10 @@ namespace Nop.Web.Areas.Admin.Models.Orders
         #region Properties
 
         public int ProductId { get; set; }
+        
+        public int? UploadId { get; set; }
+        
+        public string UploadUrl { get; set; }
 
         public string ProductName { get; set; }
 

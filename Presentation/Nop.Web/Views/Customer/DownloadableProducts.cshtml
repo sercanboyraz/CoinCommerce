@@ -9,7 +9,7 @@
     NopHtml.AppendPageCssClassParts("html-downloadable-products-page");
 }
 @section left
-{
+    {
     @await Component.InvokeAsync("CustomerNavigation", new { selectedTabId = CustomerNavigationEnum.DownloadableProducts })
 }
 <div class="page account-page downloadable-products-page">
@@ -38,6 +38,10 @@
                             <th class="product">
                                 @T("DownloadableProducts.Fields.Product")
                             </th>
+
+                            <th class="product">
+                                @T("DownloadableProducts.Fields.Upload")
+                            </th>
                             <th class="download">
                                 @T("DownloadableProducts.Fields.Download")
                             </th>
@@ -63,12 +67,74 @@
                                         </div>
                                     }
                                 </td>
+                                <td class="upload">
+                                    @if (item.UploadId == null || item.UploadId <= 0)
+                                    {
+                                        <input type="file" value="Upload" id="@item.OrderItemGuid" onchange="UploadFile('@item.OrderItemGuid')" accept=".pdf" />
+                                    }
+                                    else
+                                    {
+                                        <div>
+                                            <input type="file" value="Edit" id="@item.OrderItemGuid" onchange="UploadFile('@item.OrderItemGuid')" accept=".pdf" />
+                                            <br />
+                                            <br />
+                                            <a href="@item.UploadPath" target="_blank" download>@T("DownloadableProducts.Fields.Download")</a>
+                                        </div>
+                                    }
+                                    <script asp-location="Footer">
+                                        function UploadFile(e) {
+                                            isFilesReady = false;
+
+                                            const files = event.srcElement.files;
+
+                                            const filePromises = Object.entries(files).map(item => {
+                                                return new Promise((resolve, reject) => {
+                                                    console
+                                                    const [index, file] = item
+                                                    const reader = new FileReader();
+                                                    reader.readAsBinaryString(file);
+
+                                                    reader.onload = function (event) {
+                                                        var uploadDto = JSON.stringify({ 'orderItemId': e, 'base64File': btoa(event.target.result) });
+                                                        $.ajax({
+                                                            type: "POST",
+                                                            url: "/Upload/UploadReceipt",
+                                                            data: uploadDto,
+                                                            contentType: "application/json; charset=utf-8",
+                                                            dataType: "json",
+                                                            success: function (msg) {
+                                                                console.log(msg);
+                                                            }
+                                                        });
+                                                        resolve();
+                                                    };
+                                                    reader.onerror = function () {
+                                                        console.log("can't read the file");
+                                                        reject()
+                                                    };
+                                                });
+                                            });
+
+                                            Promise.all(filePromises)
+                                                .then(() => {
+                                                    console.log('ready to submit')
+                                                    isFilesReady = true
+                                                })
+                                                .catch((error) => {
+                                                    console.log(error)
+                                                    console.log('something wrong happened')
+                                                })
+                                        }
+                                    </script>
+                                </td>
                                 <td class="download">
                                     @if (item.DownloadId > 0)
                                     {
-                                        <div>
-                                            <a href="@Url.RouteUrl("GetDownload", new { orderItemId = item.OrderItemGuid })">@T("DownloadableProducts.Fields.Download")</a>
-                                        </div>
+                                        @*
+                            <div>
+                            <a href="@Url.RouteUrl("GetDownload", new { orderItemId = item.OrderItemGuid })">@T("DownloadableProducts.Fields.Download")</a>
+                            </div>
+                            *@
                                     }
                                     else
                                     {
